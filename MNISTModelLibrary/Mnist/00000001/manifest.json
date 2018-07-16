@@ -11,7 +11,7 @@
         {
           "inputs": [
             {
-              "description": "",
+              "description": "From signature: input 1 with tensor name inputs",
               "internalName": "image_input:0",
               "name": "inputs",
               "shape": "[None, 28, 28, 1]",
@@ -21,7 +21,7 @@
           "name": "Infer",
           "outputs": [
             {
-              "description": "",
+              "description": "From signature: output 1 with tensor name outputs",
               "internalName": "predict_op:0",
               "name": "outputs",
               "shape": "[None]",

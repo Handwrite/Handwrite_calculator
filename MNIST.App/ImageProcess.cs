@@ -144,8 +144,24 @@ namespace Imageprocess
                     image.Add((float)(0.5 - (color.R + color.G + color.B) / (3.0 * 255)));
                 }
             }
-            DispText.Add((model.Infer(new List<IEnumerable<float>> { image })).First().First().ToString());
-
+            string str_temp = (model.Infer(new List<IEnumerable<float>> { image })).First().First().ToString();
+            if (str_temp == "43")
+            {
+                str_temp = "+";
+            }
+            else if (str_temp == "42")
+            {
+                str_temp = "*";
+            }
+            else if (str_temp == "45")
+            {
+                str_temp = "-";
+            }
+            else if (str_temp == "47")
+            {
+                str_temp = "/";
+            }
+            DispText.Add(str_temp);
         }
 
     }
