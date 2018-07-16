@@ -9,14 +9,8 @@ namespace Imageprocess
 {
     class  ImageProcess
     {
-        private List<int> x_coord = new List<int>();
-        private List<int> y_coord = new List<int>();
         private Bitmap img;
         public List<string> DispText = new List<string>();
-
-        private const int MnistImageSize = 28;// the input image size of MnistModel
-        private Mnist model;// MNIST model
-        private int corr = 25;
 
         public void ImageSet(Bitmap imageset)
         {
@@ -25,10 +19,12 @@ namespace Imageprocess
 
         public void ImageCut()
         {
-            model = new Mnist();
+            Mnist model = new Mnist();
+            List<int> x_coord = new List<int>();
+            List<int> y_coord = new List<int>();
             int index = 0;
-            char c = '0';
-            CutY();
+            const int MnistImageSize = 28, corr = 25;
+            CutY(ref x_coord);
 
             if (x_coord.Count > 1)
             {
@@ -49,7 +45,8 @@ namespace Imageprocess
                     int width = Region_Width - x_start;
                     int height = img.Height;
 
-                    CutX(img.Clone(new Rectangle(x, y, width, height), img.PixelFormat));
+                    CutX(img.Clone(new Rectangle(x, y, width, height), img.PixelFormat), ref y_coord);
+
                     if (y_coord.Count > 1 && y_coord.Count != img.Height)
                     {
                         int y1 = y_coord[0];
@@ -63,9 +60,7 @@ namespace Imageprocess
                     
                     Bitmap temp = img.Clone(new Rectangle(x - corr, y - corr, width + 2 * corr, height + 2 * corr),
                                                 img.PixelFormat);
-                    //temp.Save("D:\\" + c + ".png");
-                    //++ c;
-                    TextInfer(temp);
+                    TextInfer(temp, model, MnistImageSize);
                     temp.Dispose();
 
                     if (x_index < x_coord.Count)
@@ -80,54 +75,54 @@ namespace Imageprocess
             }
         }
 
-        private void CutY()
+        private void CutY(ref List<int> x_coord)
         {
             x_coord.Clear();
-            bool isWhiteLine = true;
+            bool isWhiteCol = true;
             for (int x = 0; x < img.Width; x++)
             {
-                isWhiteLine = false;
+                isWhiteCol = true;
                 for (int y = 0; y < img.Height; y++)
                 {
-                    Color __c = img.GetPixel(x, y);
-                    if (__c.R == 255)
+                    Color col = img.GetPixel(x, y);
+                    if (col.R == 255 && col.G == 255 && col.B == 255)
                     {
-                        isWhiteLine = true;
+                        continue;
                     }
                     else
                     {
-                        isWhiteLine = false;
+                        isWhiteCol = false;
                         break;
                     }
                 }
-                if (!isWhiteLine)
+                if (!isWhiteCol)
                 {
                     x_coord.Add(x);
                 }
             }
         }
 
-        private void CutX(Bitmap tempImg)
+        private void CutX(Bitmap tempImg, ref List<int> y_coord)
         {
             y_coord.Clear();
-            bool isWhiteLine = true;
+            bool isWhiteRow = true;
             for (int x = 0; x < tempImg.Height; x++)
             {
-                isWhiteLine = false;
+                isWhiteRow = false;
                 for (int y = 0; y < tempImg.Width; y++)
                 {
-                    var __c = tempImg.GetPixel(y, x);
-                    if (__c.R == 255)
+                    var col = tempImg.GetPixel(y, x);
+                    if (col.R == 255 && col.G == 255 && col.B == 255)
                     {
-                        isWhiteLine = true;
+                        isWhiteRow = true;
                     }
                     else
                     {
-                        isWhiteLine = false;
+                        isWhiteRow = false;
                         break;
                     }
                 }
-                if (!isWhiteLine)
+                if (!isWhiteRow)
                 {
                     y_coord.Add(x);
                 }
@@ -135,7 +130,7 @@ namespace Imageprocess
             tempImg.Dispose();
         }
 
-        private void TextInfer(Bitmap img)
+        private void TextInfer(Bitmap img, Mnist model, int MnistImageSize)
         {
             Graphics gNormalized = Graphics.FromImage(img);
             gNormalized.DrawImage(img, 0, 0, MnistImageSize, MnistImageSize);
@@ -149,8 +144,6 @@ namespace Imageprocess
                     image.Add((float)(0.5 - (color.R + color.G + color.B) / (3.0 * 255)));
                 }
             }
-            //string temp = (model.Infer(new List<IEnumerable<float>> { image })).First().First().ToString();
-            //DispText.Add(temp);
             DispText.Add((model.Infer(new List<IEnumerable<float>> { image })).First().First().ToString());
 
         }
