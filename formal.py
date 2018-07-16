@@ -1,3 +1,4 @@
+#convert 28*28 Image to dataset
 import os
 from PIL import Image
 from array import *

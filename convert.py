@@ -1,3 +1,4 @@
+#convert Image to 28*28 size
 from PIL import Image
 import numpy as np
 import scipy.misc
