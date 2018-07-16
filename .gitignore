@@ -1,6 +1,7 @@
 packages/
 .vs/
-MNISTModelLibrary/
+MNISTModelLibrary/bin/
+MNISTModelLibrary/obj/
 MNIST.App/bin/
 MNIST.App/obj/
 
