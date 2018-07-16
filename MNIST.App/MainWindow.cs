@@ -84,11 +84,19 @@ namespace MNIST.App
                 temp.ImageSet((Bitmap)writeArea.Image.Clone());
                 temp.ImageCut();
                 //process the DispText
-                for (int i = 0; i< temp.DispText.Count; ++i)
+                try
                 {
-                    outputText.Text += temp.DispText.ElementAt(i); 
+                    for (int i = 0; i < temp.DispText.Count; ++i)
+                    {
+                        outputText.Text += temp.DispText.ElementAt(i);
+                    }
+
+                    outputText.Text += "=" + new DataTable().Compute(outputText.Text, "");
                 }
-                outputText.Text += "=" + new DataTable().Compute(outputText.Text, "");
+                catch
+                {
+                    outputText.Text = "Try Again!";
+                }
             }
         }
     }
