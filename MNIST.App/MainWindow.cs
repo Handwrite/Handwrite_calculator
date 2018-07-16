@@ -22,7 +22,7 @@ namespace MNIST.App
         private const int MnistImageSize = 28;// the input image size of MnistModel
         private Graphics graphics;
         private Point startPoint;// coordinate of the start point of the line to be draw
-        
+        private bool isErase;
         // Initialize the window, setup all things
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -52,11 +52,25 @@ namespace MNIST.App
         {
             if (e.Button == MouseButtons.Left)
             {
+               
                 int corr = 28;
                 Rectangle Region = new Rectangle(0 + corr, 0 + corr,
                         writeArea.Width - 2 * corr, writeArea.Height - 2 * corr);
 
-                Pen penStyle = new Pen(Color.Black, 10) { StartCap = LineCap.Round, EndCap = LineCap.Round };
+                Pen penStyle;
+
+                if (!isErase)
+                {
+                    penStyle = new Pen(Color.Black, 10) { StartCap = LineCap.Round, EndCap = LineCap.Round };
+
+                }else
+                {
+                     penStyle = new Pen(Color.White, 10)
+                    {
+                        StartCap = LineCap.Round,
+                        EndCap = LineCap.Round
+                    };
+                }
                 graphics.SetClip(Region);
                 graphics.DrawLine(penStyle, startPoint, e.Location);
                 writeArea.Invalidate();
@@ -80,7 +94,8 @@ namespace MNIST.App
             ImageProcess temp = new ImageProcess();
             if (e.Button == MouseButtons.Left)
             {
-                // begin to normalize data
+                // begin to normalize data   
+                outputText.Text = "";
                 temp.ImageSet((Bitmap)writeArea.Image.Clone());
                 temp.ImageCut();
                 //process the DispText
@@ -98,6 +113,16 @@ namespace MNIST.App
                     outputText.Text = "Try Again!";
                 }
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            isErase = true;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            isErase = false;
         }
     }
 }
